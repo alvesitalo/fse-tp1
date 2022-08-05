@@ -46,7 +46,7 @@ class Sensores:
 
         tempo_1 = 0
         tempo_2 = 0
-        distancia = 1.0
+        distancia = 0.001 # 1m em km
         velocidade = 0
 
         while 1:
@@ -54,7 +54,7 @@ class Sensores:
                 tempo_1 = time()
             if GPIO.event_detected(sensor_vel_a):
                 tempo_2 = time()
-                velocidade = distancia / (tempo_2 - tempo_1)
+                velocidade = distancia / ((tempo_2 - tempo_1) / 3600)
                 velocidades.append(velocidade)
                 print('Velocidade: ', velocidade)
 

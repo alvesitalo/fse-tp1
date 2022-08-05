@@ -38,6 +38,15 @@ class Cruzamento:
             connection.sendall(bytes(json.dumps(dados_ped_1), encoding='utf-8'))
             self.ped_1.clear()
 
+            sleep(0.1)
+            dados_ped_2 = {
+                'tipo': 'ped_2',
+                'cruzamento': self.nome,
+                'estado': self.ped_2,
+            }
+            connection.sendall(bytes(json.dumps(dados_ped_2), encoding='utf-8'))
+            self.ped_2.clear()
+
             sleep(0.9)
             dados_velocidade_1 = {
                 'tipo': 'velocidade_1',
@@ -60,14 +69,16 @@ class Cruzamento:
         dados = json.loads(dados)
 
         if dados['tipo'] == 'acao':
-            if dados['estado'] == 0:
-                self.sem.estado_inicial()
-            elif dados['estado'] == 1:
+            if dados['estado'] == 1:
                 self.sem.estado_1()
             elif dados['estado'] == 2:
                 self.sem.estado_2()
             elif dados['estado'] == 3:
-                self.sem.estado_3()     
+                self.sem.estado_3()
+            elif dados['estado'] == 4:
+                self.sem.estado_4()
+            elif dados['estado'] == 5:
+                self.sem.estado_noturno()
     
     def inicia_cruzamento(self):
         self.tcp.bind(('0.0.0.0', self.port))
@@ -75,16 +86,21 @@ class Cruzamento:
         print('Servidor do Cruzamento iniciado (:%s)' %self.port)
 
         conn, addr = self.tcp.accept()
-        print('Conectado com o Servidor Central %s\n' %str(addr))
+        print('Conectado com o Servidor Central\n')
 
         thread_velocidade_1 = Thread(target=self.sen.mede_velocidade, args=(self.sen.sensor_vel_1a, self.sen.sensor_vel_1b, self.velocidades_1))
-        thread_velocidade_2 = Thread(target=self.sen.mede_velocidade, args=(self.sen.sensor_vel_2a, self.sen.sensor_vel_2b, self.velocidades_2))
-        thread_ped_1 = Thread(target=self.sen.detecta_pedestre, args=(self.sen.botao_ped_1[0], self.sen.botao_ped_2[0], self.ped_1))
-        thread_dados = Thread(target=self.envia_dados, args=(conn,))
-
         thread_velocidade_1.start()
+        
+        thread_velocidade_2 = Thread(target=self.sen.mede_velocidade, args=(self.sen.sensor_vel_2a, self.sen.sensor_vel_2b, self.velocidades_2))
         thread_velocidade_2.start()
+
+        thread_ped_1 = Thread(target=self.sen.detecta_pedestre, args=(self.sen.botao_ped_1[0], self.sen.botao_ped_1[1], self.ped_1))
         thread_ped_1.start()
+
+        thread_ped_2 = Thread(target=self.sen.detecta_pedestre, args=(self.sen.botao_ped_2[0], self.sen.botao_ped_2[1], self.ped_2))
+        thread_ped_2.start()
+
+        thread_dados = Thread(target=self.envia_dados, args=(conn,))
         thread_dados.start()
 
         while 1:
@@ -95,4 +111,6 @@ class Cruzamento:
         thread_velocidade_1.join()
         thread_velocidade_2.join()
         thread_ped_1.join()
+        thread_ped_2.join()
         thread_dados.join()
+        sys.exit()
