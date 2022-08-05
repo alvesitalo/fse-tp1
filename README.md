@@ -9,6 +9,7 @@ Trabalho 1 da Disciplina de Fundamentos de Sistemas Embarcados.
 ## Execução
 
 Pela Raspberry 43 (164.41.98.17):
+
 1. Iniciar o Cruzamento 1:
     ```
     python main.py
@@ -21,6 +22,7 @@ Pela Raspberry 43 (164.41.98.17):
     ```
 
 Pela Raspberry 44 (164.41.98.26):
+
 3. Iniciar o Cruzamento 3:
     ```
     python main.py
@@ -37,4 +39,15 @@ Pela Raspberry 44 (164.41.98.26):
     0
     ```  
 
+6. Escolher o modo de execução: (Normal, Noturno ou Emergência):
+    ```
+    1
+    2
+    3
+    ```
+
 **Importante**: O servidor central somente deve ser iniciado **após todos os cruzamentos** estarem funcionando.
+
+## Mudança de IP e Porta
+
+As mudanças podem ser realizadas no arquivo *main.py* nas variáveis de servidor.

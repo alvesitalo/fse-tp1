@@ -2,6 +2,7 @@ import socket
 import json
 
 from threading import Thread
+from multiprocessing import Process
 from time import sleep, time
 
 class Servidor:
@@ -85,14 +86,36 @@ class Servidor:
             sleep(3)             
 
     def modo_noturno(self):
-        dados_estado_5 = {
+        while 1:
+            dados_estado_0 = {
+                "tipo": "acao",
+                "estado": 0,
+            }
+            self.tcp_c1.sendall(bytes(json.dumps(dados_estado_0), encoding='utf-8'))
+            self.tcp_c2.sendall(bytes(json.dumps(dados_estado_0), encoding='utf-8'))
+            self.tcp_c3.sendall(bytes(json.dumps(dados_estado_0), encoding='utf-8'))
+            self.tcp_c4.sendall(bytes(json.dumps(dados_estado_0), encoding='utf-8'))
+            sleep(1)
+
+            dados_estado_5 = {
+                "tipo": "acao",
+                "estado": 5,
+            }
+            self.tcp_c1.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
+            self.tcp_c2.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
+            self.tcp_c3.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
+            self.tcp_c4.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
+            sleep(1)
+    
+    def modo_emergencia(self):
+        dados_estado_6 = {
             "tipo": "acao",
-            "estado": 5,
+            "estado": 6,
         }
-        self.tcp_c1.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
-        self.tcp_c2.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
-        self.tcp_c3.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
-        self.tcp_c4.sendall(bytes(json.dumps(dados_estado_5), encoding='utf-8'))
+        self.tcp_c1.sendall(bytes(json.dumps(dados_estado_6), encoding='utf-8'))
+        self.tcp_c2.sendall(bytes(json.dumps(dados_estado_6), encoding='utf-8'))
+        self.tcp_c3.sendall(bytes(json.dumps(dados_estado_6), encoding='utf-8'))
+        self.tcp_c4.sendall(bytes(json.dumps(dados_estado_6), encoding='utf-8'))
     
     def recebe_dados(self, dados):
         #print(dados)
@@ -157,23 +180,44 @@ class Servidor:
         thread_c4 = Thread(target=self.conecta_cruzamento_4, args=())
         thread_c4.start()
 
-        thread_semaforo = Thread(target=self.rotina_semafaro, args=())
-        thread_semaforo.start()
+        print('Selecione o modo que deseja rodar os cruzamentos:\n')
+        print('1 - Modo Normal')
+        print('2 - Modo Noturno')
+        print('3 - Modo de Emergência\n')
 
-        thread_noturno = Thread(target=self.modo_noturno, args=())
-
+        processo_semaforo = Process(target=self.rotina_semafaro, args=())
+        processo_noturno = Process(target=self.modo_noturno, args=())
+        processo_emergencia = Process(target=self.modo_emergencia, args=())
+        
         while 1:
-            op = input()
-            if op == '1':
-                thread_semaforo.join(1)
-                thread_noturno.start()
-            else:
-                thread_semaforo.start()
-                thread_noturno.join(1)
+            modo = input()
+            if modo == '1':
+                try:
+                    processo_noturno.terminate()
+                    processo_emergencia.terminate()
+                except AttributeError:
+                    pass
+                processo_semaforo = Process(target=self.rotina_semafaro, args=())
+                processo_semaforo.start()
+            elif modo == '2':
+                try:
+                    processo_semaforo.terminate()
+                    processo_emergencia.terminate()
+                except AttributeError:
+                    pass
+                processo_noturno = Process(target=self.modo_noturno, args=())
+                processo_noturno.start()
+            elif modo == '3':
+                try:
+                    processo_semaforo.terminate()
+                    processo_noturno.terminate()
+                except AttributeError:
+                    pass
+                processo_emergencia = Process(target=self.modo_emergencia, args=())
+                processo_emergencia.start()
 
         thread_c1.join()
         thread_c2.join()
         thread_c3.join()
         thread_c4.join()
-        thread_semaforo.join()
         sys.exit()

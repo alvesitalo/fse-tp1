@@ -74,9 +74,19 @@ class Semaforos:
         GPIO.output(self.semaforo_2_vermelho, GPIO.LOW)
 
     def estado_noturno(self):
-        self.estado_inicial()
+        GPIO.output(self.semaforo_1_verde, GPIO.LOW)
+        GPIO.output(self.semaforo_1_amarelo, GPIO.HIGH)
+        GPIO.output(self.semaforo_1_vermelho, GPIO.LOW)
 
-        GPIO.PWM(self.semaforo_1_amarelo[0], 0.5).start(10)
-        GPIO.PWM(self.semaforo_1_amarelo[1], 0.5).start(10)
-        GPIO.PWM(self.semaforo_2_amarelo[0], 0.5).start(10)
-        GPIO.PWM(self.semaforo_2_amarelo[1], 0.5).start(10)
+        GPIO.output(self.semaforo_2_verde, GPIO.LOW)
+        GPIO.output(self.semaforo_2_amarelo, GPIO.HIGH)
+        GPIO.output(self.semaforo_2_vermelho, GPIO.LOW)
+
+    def estado_emergencia(self):
+        GPIO.output(self.semaforo_1_verde, GPIO.HIGH)
+        GPIO.output(self.semaforo_1_amarelo, GPIO.LOW)
+        GPIO.output(self.semaforo_1_vermelho, GPIO.LOW)
+
+        GPIO.output(self.semaforo_2_verde, GPIO.LOW)
+        GPIO.output(self.semaforo_2_amarelo, GPIO.LOW)
+        GPIO.output(self.semaforo_2_vermelho, GPIO.HIGH)

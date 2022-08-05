@@ -66,10 +66,13 @@ class Cruzamento:
             self.velocidades_2.clear()
 
     def recebe_dados(self, dados):
+        #print(dados)
         dados = json.loads(dados)
 
         if dados['tipo'] == 'acao':
-            if dados['estado'] == 1:
+            if dados['estado'] == 0:
+                self.sem.estado_inicial()
+            elif dados['estado'] == 1:
                 self.sem.estado_1()
             elif dados['estado'] == 2:
                 self.sem.estado_2()
@@ -79,6 +82,8 @@ class Cruzamento:
                 self.sem.estado_4()
             elif dados['estado'] == 5:
                 self.sem.estado_noturno()
+            elif dados['estado'] == 6:
+                self.sem.estado_emergencia()
     
     def inicia_cruzamento(self):
         self.tcp.bind(('0.0.0.0', self.port))
