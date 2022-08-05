@@ -27,7 +27,6 @@ class Semaforos:
         GPIO.setup(self.semaforo_2_vermelho, GPIO.OUT)
 
     def estado_inicial(self):
-        print('Iniciando Cruzamento s')
         GPIO.output(self.semaforo_1_verde, GPIO.LOW)
         GPIO.output(self.semaforo_1_amarelo, GPIO.LOW)
         GPIO.output(self.semaforo_1_vermelho, GPIO.LOW)
@@ -37,12 +36,10 @@ class Semaforos:
         GPIO.output(self.semaforo_2_vermelho, GPIO.LOW)
 
     def estado_1(self):
-        print('Semaforo 1 do Cruzamento s fechado')
         GPIO.output(self.semaforo_1_verde, GPIO.LOW)
         GPIO.output(self.semaforo_1_amarelo, GPIO.LOW)
         GPIO.output(self.semaforo_1_vermelho, GPIO.HIGH)
 
-        print('Semaforo 2 do Cruzamento s aberto')
         GPIO.output(self.semaforo_2_verde, GPIO.HIGH)
         GPIO.output(self.semaforo_2_amarelo, GPIO.LOW)
         GPIO.output(self.semaforo_2_vermelho, GPIO.LOW)
@@ -57,12 +54,10 @@ class Semaforos:
         GPIO.output(self.semaforo_2_vermelho, GPIO.LOW)
 
     def estado_3(self):
-        print('Semaforo 1 do Cruzamento s aberto')
         GPIO.output(self.semaforo_1_verde, GPIO.HIGH)
         GPIO.output(self.semaforo_1_amarelo, GPIO.LOW)
         GPIO.output(self.semaforo_1_vermelho, GPIO.LOW)
 
-        print('Semaforo 2 do Cruzamento s fechado')
         GPIO.output(self.semaforo_2_verde, GPIO.LOW)
         GPIO.output(self.semaforo_2_amarelo, GPIO.LOW)
         GPIO.output(self.semaforo_2_vermelho, GPIO.HIGH)
